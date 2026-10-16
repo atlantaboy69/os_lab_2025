@@ -1,4 +1,3 @@
-
 /* Program to display address information about the process */
 /* Adapted from Gray, J., program 1.4 */
 #include <stdio.h>
@@ -7,8 +6,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-/* Below is a macro definition */
-#define SHW_ADR(ID, I) (printf("ID %s \t is at virtual address: %8X\n", ID, &I))
+/* Изменено %8X на %p для поддержки 64-битных адресов */
+#define SHW_ADR(ID, I) (printf("ID %s \t is at virtual address: %p\n", ID, (void*)&I))
 
 extern int etext, edata, end; /* Global variables for process
                                  memory */
@@ -20,13 +19,16 @@ int showit(); /* Function prototype */
 main() {
   int i = 0; /* Automatic variable */
 
-  /* Printing addressing information */
-  printf("\nAddress etext: %8X \n", &etext);
-  printf("Address edata: %8X \n", &edata);
-  printf("Address end  : %8X \n", &end);
+  /* Изменено %8X на %p */
+  printf("\nAddress etext: %p \n", (void*)&etext);
+  printf("Address edata: %p \n", (void*)&edata);
+  printf("Address end  : %p \n", (void*)&end);
 
   SHW_ADR("main", main);
-  SHW_ADR("showit", showit);
+  
+  /* Для функции showit берем адрес напрямую, чтобы макрос не ругался на типы */
+  printf("ID showit \t is at virtual address: %p\n", (void*)showit);
+  
   SHW_ADR("cptr", cptr);
   SHW_ADR("buffer1", buffer1);
   SHW_ADR("i", i);
@@ -42,7 +44,8 @@ int showit(p) char *p;
   char *buffer2;
   SHW_ADR("buffer2", buffer2);
   if ((buffer2 = (char *)malloc((unsigned)(strlen(p) + 1))) != NULL) {
-    printf("Alocated memory at %X\n", buffer2);
+    /* Изменено %X на %p */
+    printf("Alocated memory at %p\n", (void*)buffer2);
     strcpy(buffer2, p);    /* copy the string */
     printf("%s", buffer2); /* Didplay the string */
     free(buffer2);         /* Release location */
