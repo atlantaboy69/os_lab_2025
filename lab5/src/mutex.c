@@ -23,12 +23,13 @@ int r1 = 0, r2 = 0, r3 = 0;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
-  pthread_t thread1, thread2;
+  pthread_t thread1, thread2; //создание потоков
 
   if (pthread_create(&thread1, NULL, (void *)do_one_thing,
 			  (void *)&common) != 0) {
-    perror("pthread_create");
-    exit(1);
+    perror("pthread_create"); //создаем через create поток в переменную thread1, null -значение по умолчанию, чтобы поток был joinable, 
+    // с обычным стеком, указываем на исполняемую функцию, передаем common перменную общую, провека !=0 при успешном создании 0, при неудаче ненулевой код
+    exit(1); //завершает программу если появилась ошибка
   }
 
   if (pthread_create(&thread2, NULL, (void *)do_another_thing,
@@ -43,7 +44,9 @@ int main() {
   }
 
   if (pthread_join(thread2, NULL) != 0) {
-    perror("pthread_join");
+    perror("pthread_join"); // главный поток main приостанавливается
+    // пока крутятся итерации и как только тред1 заканчивается
+    // main запускает второй поток, null предеаем так как функции возвращают null ведь они void
     exit(1);
   }
 
@@ -57,7 +60,7 @@ void do_one_thing(int *pnum_times) {
   unsigned long k;
   int work;
   for (i = 0; i < 50; i++) {
-    // pthread_mutex_lock(&mut);
+    pthread_mutex_lock(&mut);
     printf("doing one thing\n");
     work = *pnum_times;
     printf("counter = %d\n", work);
@@ -65,7 +68,7 @@ void do_one_thing(int *pnum_times) {
     for (k = 0; k < 500000; k++)
       ;                 /* long cycle */
     *pnum_times = work; /* write back */
-	// pthread_mutex_unlock(&mut);
+	pthread_mutex_unlock(&mut);
   }
 }
 
@@ -74,7 +77,7 @@ void do_another_thing(int *pnum_times) {
   unsigned long k;
   int work;
   for (i = 0; i < 50; i++) {
-    // pthread_mutex_lock(&mut);
+    pthread_mutex_lock(&mut);
     printf("doing another thing\n");
     work = *pnum_times;
     printf("counter = %d\n", work);
@@ -82,7 +85,7 @@ void do_another_thing(int *pnum_times) {
     for (k = 0; k < 500000; k++)
       ;                 /* long cycle */
     *pnum_times = work; /* write back */
-    // pthread_mutex_unlock(&mut);
+    pthread_mutex_unlock(&mut);
   }
 }
 
