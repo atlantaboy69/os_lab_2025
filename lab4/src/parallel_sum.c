@@ -13,6 +13,7 @@ void *ThreadSum(void *args) {
   return (void *)(size_t)Sum(sum_args);
 }
 
+
 int main(int argc, char **argv) {
   uint32_t threads_num = 0;
   uint32_t array_size = 0;

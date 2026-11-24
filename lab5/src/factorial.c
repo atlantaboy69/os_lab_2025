@@ -13,7 +13,7 @@ long long total_result = 1;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER; //инициализуруем мутекс
 
 void *factorial_part(void *arg) {
-    // Получаем номер потока от 0 до pnum - 1
+    // Получаем номер потока
     int thread_id = (int)(intptr_t)arg; //приводим аргумент(указатель) в целочисленный тип(intptr_t совпадает с размером указателя на ос)
 
     // Равномерно делим диапазон от 1 до k

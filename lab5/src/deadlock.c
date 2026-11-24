@@ -9,7 +9,7 @@ pthread_mutex_t mut_B = PTHREAD_MUTEX_INITIALIZER;
 void *thread_one(void *arg) {
     printf("[Поток 1]: Попытка захватить mut_A...\n");
     pthread_mutex_lock(&mut_A);
-    printf("[Поток 1]: Захватил mut_A. Имитация работы...\n");
+    printf("[Поток 1]: Захватил mut_A.\n");
 
     sleep(1); // Гарантирует, что Поток 2 успеет захватить mut_B
 

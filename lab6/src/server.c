@@ -43,10 +43,8 @@ uint64_t Factorial(const struct FactorialArgs *args) {
 }
 
 /*
- * Точка входа для потока pthread:
- * Принимает указатель на FactorialArgs, возвращает результат через приведение
- * значения uint64_t к типу указателя (void *)(uintptr_t).
- */
+ * Точка входа для потока pthread
+*/
 void *ThreadFactorial(void *args) {
     struct FactorialArgs *fargs = (struct FactorialArgs *)args;
     uint64_t res = Factorial(fargs);
@@ -110,8 +108,8 @@ int main(int argc, char **argv) {
 
     /*
      * 1. Создание TCP-сокета:
-     * AF_INET     - стек протоколов IPv4
-     * SOCK_STREAM - надежный двусторонний байтовый поток (TCP)
+     * AF_INET     - протоколы IPv4
+     * SOCK_STREAM - TCP
      */
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
@@ -121,9 +119,8 @@ int main(int argc, char **argv) {
 
     /*
      * 2. Настройка сокета:
-     * SO_REUSEADDR предотвращает ошибку "Address already in use",
-     * позволяя повторно привязать порт, даже если предыдущее соединение
-     * еще находится в системном состоянии TIME_WAIT.
+     * SO_REUSEADDR 
+     * позволяет повторно привязать порт, даже если он ещё находится в системном состоянии TIME_WAIT.
      */
     int opt_val = 1;
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val)) < 0) {
@@ -135,7 +132,7 @@ int main(int argc, char **argv) {
     /*
      * 3. Формирование адреса привязки:
      * sin_family      - семейство адресов (AF_INET)
-     * sin_port        - сетевой порядок байт (Big-Endian via htons)
+     * sin_port        - сетевой порядок байт 
      * INADDR_ANY      - прослушивание всех доступных сетевых интерфейсов
      */
     struct sockaddr_in server_addr;
@@ -154,8 +151,7 @@ int main(int argc, char **argv) {
     }
 
     /*
-     * 5. Перевод сокета в режим ожидания входящих соединений:
-     * 128 - глубина очереди полностью установленных соединений (backlog).
+     * 5. Перевод сокета в режим ожидания входящих соединений
      */
     if (listen(server_fd, 128) < 0) {
         perror("Error: listen() failed");
